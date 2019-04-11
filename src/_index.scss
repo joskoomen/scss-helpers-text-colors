@@ -1,0 +1,44 @@
+@charset "UTF-8";
+
+$text-colors : (
+    'white' : map_get($color-blackwhite-palette, 'white'),
+    'black' : map_get($color-blackwhite-palette, 'black'),
+    'primary' : map_get($color-primary-palette, 'primary'),
+    'secondary' : map_get($color-primary-palette, 'secondary'),
+) !default;
+
+$helpers-text-colors-class-prefix: 'txt-c' !default;
+
+@mixin _create-txtcolor-class($prefix, $color, $hex, $hover:false) {
+  .#{$prefix}-#{$color} {
+    color: $hex;
+  }
+  
+  @if $hover {
+    .#{$prefix}-hover-#{$color}:hover {
+      color: $hex;
+    }
+  }
+}
+
+@mixin helpers-text-colors($responsive:false, $hover-classes : false) {
+  @if $responsive {
+    @each $classname in $breakpoint-classes {
+      @each $color in $text-colors {
+        $key: nth($color, 1);
+        $hex: nth($color, 2);
+        
+        @include breakpoint($classname) {
+          // .xs-txt-c-white // .xs-txt-c-hover-primary
+          @include _create-txtcolor-class(#{$classname}-#{$helpers-text-colors-class-prefix}, $key, $hex, $hover-classes);
+        }
+      }
+    }
+  } @else {
+    @each $color in $helpers-bgcolors {
+      $key: nth($color, 1);
+      $hex: nth($color, 2);
+      @include _create-txtcolor-class($helpers-text-colors-class-prefix, $key, $hex, $hover-classes);
+    }
+  }
+}
